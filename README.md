@@ -44,7 +44,7 @@ To use the server, you can compile the code and run the executable. It will star
 2. Run the server program.
 
    ```bash
-   ./server [port]
+   ./server
    ```
 
 3. (For Multi-Device Chatting) Note the IP address of your device (server) in network settings. (Skip this step for running server and client in same device)
