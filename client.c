@@ -34,7 +34,10 @@ void *receive_messages(void *arg) {
 
 
 int main() {
-    initscr(); // Initialize ncurses
+
+    printf("...");
+
+    initscr();
 
     printw("Do you want to use a specified IP? (Y/N):\n");
     refresh();
@@ -63,11 +66,30 @@ int main() {
             break;
     }
 
-    clear(); // Clear the screen
+    getch();
+    clear();
     refresh();
-    // getch(); // Wait for a key press
+    printw("\nEnter your username: ");
+    refresh();
+    getstr(username);
 
-    endwin(); // End ncurses
+    size_t len = strlen(username);
+    if (len > 0 && username[len - 1] == '\n') {
+        username[len - 1] = '\0';
+    }
+
+    send(client_socket, username, strlen(username), 0);
+    
+    clear();
+    refresh();
+
+    endwin();
+    
+    printf("\033[A");
+    printf("\033[K");
+    printf("\033[A");
+    printf("\033[K");
+    
     struct sockaddr_in server_addr;
     pthread_t receive_thread;
     char message[MAX_BUFFER_SIZE];
@@ -86,16 +108,6 @@ int main() {
         perror("Connection failed");
         exit(EXIT_FAILURE);
     }
-
-    printf("Enter your username: ");
-    fgets(username, sizeof(username), stdin);
-
-    size_t len = strlen(username);
-    if (len > 0 && username[len - 1] == '\n') {
-        username[len - 1] = '\0';
-    }
-
-    send(client_socket, username, strlen(username), 0);
 
     pthread_create(&receive_thread, NULL, receive_messages, NULL);
 
@@ -152,11 +164,6 @@ int main() {
     }
 
     close(client_socket);
-    // refresh();
-    // printf("Press any key...");
-    // getch(); // Wait for a key press
-
-    // endwin(); // End ncurses
 
     return 0;
 }
